@@ -549,11 +549,12 @@ function getcookie(req, name, secrets, shouldReplaceCookieWithToken=false) {
   if (header) {
     // Get 'cookie' from 'X-Access-Token' header if set:
     if (shouldReplaceCookieWithToken){
-      var cookies = cookie.parse(header);
-      raw = cookies[name];
+      raw = req.getHeader('X-Access-Token')
 
     } else {
-      raw = req.getHeader('X-Access-Token')
+      var cookies = cookie.parse(header);
+      raw = cookies[name];
+      
     }
     
 
