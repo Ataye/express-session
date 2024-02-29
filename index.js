@@ -561,10 +561,11 @@ function getcookie(req, name, secrets, shouldReplaceCookieWithToken=false) {
 
     // decode:
     raw = decodeURI(raw)
+    console.log(raw)
 
 
     if (raw) {
-      if (raw.substr(0, 2) === 's:') {
+      if (raw.substring(0, 2) === 's:') {
         val = unsigncookie(raw.slice(2), secrets);
         console.log('Unsigned:', val)
 
