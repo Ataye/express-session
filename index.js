@@ -222,7 +222,8 @@ function session(options) {
     req.sessionStore = store;
 
     // get the session ID from the cookie
-    var cookieId = req.sessionID = getcookie(req, name, secrets);
+    // Get 'cookie' from 'X-Access-Token' header:
+    var cookieId = req.sessionID = getcookie(req, name, secrets, shouldReplaceCookieWithToken);
 
     // set-cookie
     onHeaders(res, function(){
@@ -503,6 +504,8 @@ function session(options) {
       }
 
       try {
+        console.log('DB SESSION', sess)
+
         if (err || !sess) {
           debug('no session found')
           generate()
@@ -538,16 +541,21 @@ function generateSessionId(sess) {
  * @private
  */
 
-function getcookie(req, name, secrets) {
+function getcookie(req, name, secrets, shouldReplaceCookieWithToken=false) {
   var header = req.headers.cookie;
   var raw;
   var val;
 
   // read from cookie header
   if (header) {
-    var cookies = cookie.parse(header);
+    if (shouldReplaceCookieWithToken){
+      var cookies = cookie.parse(header);
+      raw = cookies[name];
 
-    raw = cookies[name];
+    } else {
+      raw = req.getHeader('X-Access-Token')
+    }
+    
 
     if (raw) {
       if (raw.substr(0, 2) === 's:') {
@@ -596,6 +604,31 @@ function getcookie(req, name, secrets) {
 
   return val;
 }
+
+function gettoken(req, name, secrets) {
+    var header = req.headers.cookie;
+    var raw;
+    var val;
+  
+    // read from cookie header
+    if (header) {
+      var cookies = cookie.parse(header);
+  
+      raw = cookies[name];
+  
+      if (raw) {
+        if (raw.substr(0, 2) === 's:') {
+          val = unsigncookie(raw.slice(2), secrets);
+  
+          if (val === false) {
+            debug('cookie signature invalid');
+            val = undefined;
+          }
+        } else {
+          debug('cookie unsigned')
+        }
+      }
+    }
 
 /**
  * Hash the given `sess` object omitting changes to `.cookie`.
