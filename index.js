@@ -544,7 +544,7 @@ function getcookie(req, name, secrets, shouldReplaceCookieWithToken=false) {
   var header = req.headers.cookie;
   var raw;
   var val;
-  var token = req.getHeader('X-Access-Token')
+  var token = req.headers['X-Access-Token']
 
   if (shouldReplaceCookieWithToken && token) {
     // Get 'cookie' from 'X-Access-Token' header if set:
