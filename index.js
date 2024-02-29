@@ -551,10 +551,14 @@ function getcookie(req, name, secrets, shouldReplaceCookieWithToken=false) {
     if (shouldReplaceCookieWithToken){
       raw = req.getHeader('X-Access-Token')
 
+      // cookie-name=s%3A104iL1km4cxqpOnaHlldweIvUmlcDVxu.gFr1UhDNApeFT85wshTV8sP20TUUlYC7hARSCqwuuuE; Path=/; HttpOnly; SameSite=None
+      raw = raw.split('=')[1]
+      raw = raw.split(';')[0]
+
     } else {
       var cookies = cookie.parse(header);
       raw = cookies[name];
-      
+
     }
     
 
