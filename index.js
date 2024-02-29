@@ -249,7 +249,7 @@ function session(options) {
 
       // set cookie
       try {
-        setcookie(res, name, req.sessionID, secrets[0], req.session.cookie.data)
+        setcookie(res, name, req.sessionID, secrets[0], req.session.cookie.data, shouldReplaceCookieWithToken)
       } catch (err) {
         defer(next, err)
       }
@@ -664,7 +664,7 @@ function issecure(req, trustProxy) {
  * @private
  */
 
-function setcookie(res, name, val, secret, options) {
+function setcookie(res, name, val, secret, options, shouldReplaceCookieWithToken=false) {
   var signed = 's:' + signature.sign(val, secret);
   var data = cookie.serialize(name, signed, options);
 
