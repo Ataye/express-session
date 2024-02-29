@@ -560,7 +560,7 @@ function getcookie(req, name, secrets, shouldReplaceCookieWithToken=false) {
     console.log(raw)
 
     // decode:
-    raw = decodeURI(raw)
+    raw = decodeURIComponent(raw)
     console.log(raw)
 
 
