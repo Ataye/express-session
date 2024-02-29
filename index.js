@@ -544,25 +544,39 @@ function getcookie(req, name, secrets, shouldReplaceCookieWithToken=false) {
   var header = req.headers.cookie;
   var raw;
   var val;
+  var token = req.getHeader('X-Access-Token')
+
+  if (shouldReplaceCookieWithToken && token) {
+    // Get 'cookie' from 'X-Access-Token' header if set:
+    raw = token
+    console.log(raw)
+
+    // cookie-name=s%3A104iL1km4cxqpOnaHlldweIvUmlcDVxu.gFr1UhDNApeFT85wshTV8sP20TUUlYC7hARSCqwuuuE; Path=/; HttpOnly; SameSite=None
+    raw = raw.split('=')[1]
+    console.log(raw)
+    raw = raw.split(';')[0]
+    console.log(raw)
+
+
+    if (raw) {
+      if (raw.substr(0, 2) === 's:') {
+        val = unsigncookie(raw.slice(2), secrets);
+
+        if (val === false) {
+          debug('cookie signature invalid');
+          val = undefined;
+        }
+      } else {
+        debug('cookie unsigned')
+      }
+    }
+  }
+
 
   // read from cookie header
   if (header) {
-    // Get 'cookie' from 'X-Access-Token' header if set:
-    if (shouldReplaceCookieWithToken){
-      raw = req.getHeader('X-Access-Token')
-      console.log(raw)
-
-      // cookie-name=s%3A104iL1km4cxqpOnaHlldweIvUmlcDVxu.gFr1UhDNApeFT85wshTV8sP20TUUlYC7hARSCqwuuuE; Path=/; HttpOnly; SameSite=None
-      raw = raw.split('=')[1]
-      console.log(raw)
-      raw = raw.split(';')[0]
-      console.log(raw)
-
-    } else {
-      var cookies = cookie.parse(header);
-      raw = cookies[name];
-
-    }
+    var cookies = cookie.parse(header);
+    raw = cookies[name];
     
 
     if (raw) {
