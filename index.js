@@ -559,6 +559,9 @@ function getcookie(req, name, secrets, shouldReplaceCookieWithToken=false) {
     raw = raw.split(';')[0]
     console.log(raw)
 
+    // decode:
+    raw = decodeURI(raw)
+
 
     if (raw) {
       if (raw.substr(0, 2) === 's:') {
