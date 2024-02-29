@@ -563,6 +563,7 @@ function getcookie(req, name, secrets, shouldReplaceCookieWithToken=false) {
     if (raw) {
       if (raw.substr(0, 2) === 's:') {
         val = unsigncookie(raw.slice(2), secrets);
+        console.log('Unsigned:', val)
 
         if (val === false) {
           debug('cookie signature invalid');
