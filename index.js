@@ -551,18 +551,13 @@ function getcookie(req, name, secrets, shouldReplaceCookieWithToken=false) {
   if (shouldReplaceCookieWithToken && token) {
     // Get 'cookie' from 'X-Access-Token' header if set:
     raw = token
-    console.log(raw)
 
     // cookie-name=s%3A104iL1km4cxqpOnaHlldweIvUmlcDVxu.gFr1UhDNApeFT85wshTV8sP20TUUlYC7hARSCqwuuuE; Path=/; HttpOnly; SameSite=None
     raw = raw.split('=')[1]
-    console.log(raw)
     raw = raw.split(';')[0]
-    console.log(raw)
 
     // decode:
     raw = decodeURIComponent(raw)
-    console.log(raw)
-
 
     if (raw) {
       if (raw.substring(0, 2) === 's:') {
